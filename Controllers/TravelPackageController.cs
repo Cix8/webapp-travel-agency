@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using webapp_travel_agency.Db_Context;
 using webapp_travel_agency.Models;
 
 namespace webapp_travel_agency.Controllers
 {
+    [Authorize]
     public class TravelPackageController : Controller
     {
         private TravelAgencyContext _ctx;
