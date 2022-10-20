@@ -25,6 +25,7 @@ namespace webapp_travel_agency.Models
         public float Price { get; set; }
 
         [Required(ErrorMessage = "La durata è obbligatoria")]
+        [DurationValidation]
         public int DurationInDays { get; set; }
         public List<Destination> Destinations { get; set; }
         public TravelPackage()
