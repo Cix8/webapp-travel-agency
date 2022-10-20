@@ -26,20 +26,23 @@ namespace webapp_travel_agency.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            TravelPackage newPackage = new TravelPackage();
-            return View(newPackage);
+            TravelDestination model = new TravelDestination();
+            model.Destinations = _ctx.Destinations.ToList();
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TravelPackage formData)
+        public IActionResult Create(TravelDestination formData)
         {
             if(!ModelState.IsValid)
             {
+                formData.Destinations = _ctx.Destinations.ToList();
                 return View(formData);
             }
 
-            _ctx.TravelPackages.Add(formData);
+            formData.Package.Destinations = _ctx.Destinations.Where(dest => formData.SelectedDestinations.Contains(dest.Id)).ToList();
+            _ctx.TravelPackages.Add(formData.Package);
             _ctx.SaveChanges();
             return RedirectToAction("Index");
         }

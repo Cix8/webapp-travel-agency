@@ -9,7 +9,7 @@ namespace webapp_travel_agency.Db_Context
     {
         private string connString = "Data Source=localhost;Initial Catalog=travel_agency_db;Integrated Security=True";
         public DbSet<TravelPackage> TravelPackages { get; set; }
-
+        public DbSet<Destination> Destinations { get; set; }
         public TravelAgencyContext()
         {
         }

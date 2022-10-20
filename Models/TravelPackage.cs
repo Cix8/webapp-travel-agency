@@ -9,25 +9,27 @@ namespace webapp_travel_agency.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
+        [Required(ErrorMessage = "Il titolo è obbligatorio")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
+        [Required(ErrorMessage = "La descrizione è obbligatoria")]
         [Column(TypeName = "text")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
+        [Required(ErrorMessage = "La cover è obbligatoria")]
         [Column(TypeName = "text")]
         public string Cover { get; set; }
 
-        [Required(ErrorMessage = "Il campo è obbligatorio")]
+        [Required(ErrorMessage = "Il prezzo è obbligatorio")]
         [PriceValidation]
         public float Price { get; set; }
 
-
+        [Required(ErrorMessage = "La durata è obbligatoria")]
+        public int DurationInDays { get; set; }
+        public List<Destination> Destinations { get; set; }
         public TravelPackage()
         {
-
+            Destinations = new List<Destination>();
         }
     }
 }
