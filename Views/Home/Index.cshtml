@@ -4,48 +4,74 @@
 
 <h1 class="text-center pt-2 pb-5">Pacchetti Viaggio disponibili</h1>
 
+<div class="d-flex w-25 py-5 mx-auto">
+    <input id="search-input" class="form-control me-2" type="search" placeholder="Cerca un pacchetto-viaggi" aria-label="Search">
+</div>
+
 <div class="container-fluid" id="content-container"></div>
 
 <script type="text/javascript">
     
     const contentContainer = document.getElementById("content-container");
 
-    axios.get("/api/travelpackage/get")
-        .then(resp => {
-            console.log(resp.data);
+    getPackage();
 
-            const list = document.createElement("ul");
-            list.setAttribute("class", "list-group flex-row flex-wrap ms-5");
+    timeoutId = undefined;
 
-            const data = resp.data;
+    const searchInp = document.getElementById("search-input");
+    searchInp.addEventListener("keyup", function () {
+        timeoutId = clearTimeout(timeoutId);
+        timeoutId = setTimeout(getPackage, 2000, this.value);
+    });
 
-            data.forEach(pack => {
-                const listItem = document.createElement("li");
-                listItem.setAttribute("class", "card my-3 me-3 ms_card");
-                const cardImg = document.createElement("img");
-                cardImg.setAttribute("src", pack.cover);
-                cardImg.setAttribute("class", "card-img-top");
-                const cardBody = document.createElement("div");
-                cardBody.setAttribute("class", "card-body");
-                const cardTitle = document.createElement("h2");
-                cardTitle.setAttribute("class", "card-title");
-                const cardDesc = document.createElement("p");
-                cardDesc.setAttribute("class", "card-text pt-3");
-                const cardPrice = document.createElement("span");
-                cardPrice.setAttribute("class", "d-block");
-                cardTitle.innerHTML += `Pacchetto ${pack.title}`;
-                cardDesc.innerHTML += `${pack.description}`;
-                cardPrice.innerHTML += `Prezzo: € ${pack.price}`;
-                cardBody.append(cardTitle);
-                cardBody.append(cardDesc);
-                cardBody.append(cardPrice);
-                listItem.append(cardImg);
-                listItem.append(cardBody);
-                list.append(listItem);
+    searchInp.addEventListener("keydown", function () {
+        timeoutId = clearTimeout(timeoutId);
+    });
+
+    function getPackage(searchKey = "") {
+        axios.get("/api/travelpackage/get", {
+            params: {
+                searchKey: searchKey
+            }
+        })
+            .then(resp => {
+                console.log(resp.data);
+
+                contentContainer.innerHTML = "";
+
+                const list = document.createElement("ul");
+                list.setAttribute("class", "list-group flex-row flex-wrap ms-5");
+
+                const data = resp.data;
+
+                data.forEach(pack => {
+                    const listItem = document.createElement("li");
+                    listItem.setAttribute("class", "card my-3 me-3 ms_card");
+                    const cardImg = document.createElement("img");
+                    cardImg.setAttribute("src", pack.cover);
+                    cardImg.setAttribute("class", "card-img-top");
+                    const cardBody = document.createElement("div");
+                    cardBody.setAttribute("class", "card-body");
+                    const cardTitle = document.createElement("h2");
+                    cardTitle.setAttribute("class", "card-title");
+                    const cardDesc = document.createElement("p");
+                    cardDesc.setAttribute("class", "card-text pt-3");
+                    const cardPrice = document.createElement("span");
+                    cardPrice.setAttribute("class", "d-block");
+                    cardTitle.innerHTML += `Pacchetto ${pack.title}`;
+                    cardDesc.innerHTML += `${pack.description}`;
+                    cardPrice.innerHTML += `Prezzo: € ${pack.price}`;
+                    cardBody.append(cardTitle);
+                    cardBody.append(cardDesc);
+                    cardBody.append(cardPrice);
+                    listItem.append(cardImg);
+                    listItem.append(cardBody);
+                    list.append(listItem);
+                })
+                contentContainer.append(list);
             })
-            contentContainer.append(list);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .catch(err => {
+                console.log(err);
+            })
+    }
 </script>

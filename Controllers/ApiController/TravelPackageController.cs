@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Db_Context;
 using webapp_travel_agency.Models;
 
@@ -15,10 +16,15 @@ namespace webapp_travel_agency.Controllers.ApiController
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string? searchKey)
         {
-            List<TravelPackage> packages = _ctx.TravelPackages.ToList();
-            return Ok(packages);
+            IQueryable<TravelPackage> packages = _ctx.TravelPackages;
+            if(searchKey != null)
+            {
+                packages = packages.Where(pack => pack.Title.Contains(searchKey));
+            }
+            packages = packages.Include("Destinations");
+            return Ok(packages.ToList());
         }
     }
 }
