@@ -16,3 +16,15 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.ms_align-normal {
+    align-items: normal !important;
+}
+
+.ms_card {
+    width: 23rem;
+}
+
+.ms_card img {
+    height: 15rem;
+}
