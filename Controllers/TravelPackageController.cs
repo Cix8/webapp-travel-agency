@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Db_Context;
 using webapp_travel_agency.Models;
 
@@ -61,33 +62,40 @@ namespace webapp_travel_agency.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            TravelPackage packageToUpdate = _ctx.TravelPackages.Where(pack => pack.Id == id).FirstOrDefault();
-            if(packageToUpdate == null)
+            TravelDestination model = new TravelDestination();
+            model.Package = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
+            if(model.Package == null)
             {
                 return NotFound("Pacchetto non trovato");
             }
-            return View(packageToUpdate);
+            model.Destinations = _ctx.Destinations.ToList();
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, TravelPackage formData)
+        public IActionResult Update(int id, TravelDestination formData)
         {
+            formData.Package.Id = id;
+
             if (!ModelState.IsValid)
             {
+                formData.Destinations = _ctx.Destinations.ToList();
                 return View(formData);
             }
 
-            TravelPackage packageToUpdate = _ctx.TravelPackages.Where(pack => pack.Id == id).FirstOrDefault();
+            TravelPackage packageToUpdate = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
             if(packageToUpdate == null)
             {
                 return NotFound("Pacchetto non trovato");
             }
 
-            packageToUpdate.Title = formData.Title;
-            packageToUpdate.Description = formData.Description;
-            packageToUpdate.Cover = formData.Cover;
-            packageToUpdate.Price = formData.Price;
+            packageToUpdate.Title = formData.Package.Title;
+            packageToUpdate.Description = formData.Package.Description;
+            packageToUpdate.Cover = formData.Package.Cover;
+            packageToUpdate.Price = formData.Package.Price;
+            packageToUpdate.DurationInDays = formData.Package.DurationInDays;
+            packageToUpdate.Destinations = _ctx.Destinations.Where(dest => formData.SelectedDestinations.Contains(dest.Id)).ToList();
 
             _ctx.SaveChanges();
 

@@ -14,7 +14,6 @@ namespace webapp_travel_agency.Models
         {
             Package = new TravelPackage();
             Destinations = new List<Destination>();
-            SelectedDestinations = new List<int>();
         }
     }
 }
