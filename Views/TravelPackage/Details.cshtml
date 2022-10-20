@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Dettaglio pacchetto";
+}
+
+@model TravelPackage
+
+<h1>Dettagli pacchetto @Model.Title</h1>
+
+<div class="card my-3 mx-auto" style="width: 25rem;">
+    <img src="@Model.Cover" class="card-img-top" style="height:15rem;">
+    <div class="card-body">
+        <h2 class="card-title">@Model.Title</h2>
+        <p class="card-text">Descrizione: @Model.Description</p>
+        <span class="d-block pb-3">Prezzo: € @Model.Price</span>
+        <a href="@Url.Action("Update", "TravelPackage", new {id = Model.Id})" class="btn btn-primary">Modifica pacchetto</a>
+        <form class="d-inline" asp-action="Delete" asp-controller="TravelPackage" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Elimina pacchetto</button>
+        </form>
+    </div>
+</div>
