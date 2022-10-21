@@ -2,9 +2,37 @@
     ViewData["Title"] = "Dettaglio pacchetto";
 }
 
-<h1 id="title" class="text-center py-4">Pacchetto </h1>
+<h1 id="page-title" class="text-center py-4">Pacchetto </h1>
 
 <div class="container-fluid d-flex justify-content-center" id="content-container"></div>
+
+<h2 class="text-center py-3">Contattaci per avere maggiori info</h2>
+
+<div id="success" class="d-none my_pointer alert alert-success text-center"></div>
+
+<ul id="errors" class="d-none list-group my_pointer"></ul>
+
+<form id="message-form">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text">Non condivideremo con nessun altro la tua email</div>
+    </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="name">
+    </div>
+    <div class="mb-3">
+        <label for="title" class="form-label">Titolo</label>
+        <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+        <div id="titleHelp" class="form-text">Inserisci il titolo del tuo messaggio</div>
+    </div>
+    <div class="mb-3">
+        <label for="content">Messaggio</label>
+        <textarea class="form-control" id="content" rows="5"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary mb-3">Invia</button>
+</form>
 
 <script type="text/javascript">
     
@@ -12,11 +40,27 @@
     const urlArray = currentUrl.split("/");
     const currentId = urlArray[urlArray.length - 1];
     const contentContainer = document.getElementById("content-container");
+    const pageTitle = document.getElementById("page-title");
+
+    const form = document.getElementById("message-form");
+    const email = document.getElementById("email");
     const title = document.getElementById("title");
+    const name = document.getElementById("name");
+    const content = document.getElementById("content");
+    const formObj = {packId: currentId, email: email, title: title, name: name, content: content };
+    
+    const errorList = document.getElementById("errors");
+    const successCont = document.getElementById("success");
 
     console.log(currentId);
 
     getDetails(currentId);
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        send(formObj, successCont, errorList);
+    })
 
     function getDetails(id) {
         axios.get("/api/travelpackage/getdetails/" + id)
@@ -25,7 +69,7 @@
 
                 const pack = resp.data;
 
-                title.innerHTML += `${pack.title}`;
+                pageTitle.innerHTML += `${pack.title}`;
                 
                 const itemCard = document.createElement("div");
                 itemCard.setAttribute("class", "card my-3 me-3 ms_card");
@@ -64,6 +108,50 @@
             .catch(e => {
                 console.log(e);
             })
+    }
+
+    function send(obj, successContainer, errorsContainer) {
+        axios.post("/api/message/send/" + obj.packId, {
+            email: obj.email.value,
+            title: obj.title.value,
+            name: obj.name.value,
+            content: obj.content.value
+        })
+            .then((resp) => {
+                resetValue(obj.email);
+                resetValue(obj.title);
+                resetValue(obj.name);
+                resetValue(obj.content);
+                errorsContainer.innerHTML = "";
+                errorsContainer.classList.add("d-none");
+                successContainer.innerHTML = "";
+                const successMessage = document.createElement("h5");
+                successMessage.innerHTML = "Messaggio inviato correttamente";
+                successContainer.append(successMessage);
+                successContainer.classList.remove("d-none");
+                successContainer.addEventListener("click", function () {
+                    successContainer.classList.add("d-none");
+                    successContainer.innerHTML = "";
+                })
+            })
+            .catch((e) => {
+                errorsContainer.innerHTML = "";
+                const errorsResp = e.response.data.errors;
+                for (const prop in errorsResp) {
+                    const errorItem = document.createElement("li");
+                    errorItem.setAttribute("class", "alert alert-danger");
+                    errorItem.innerHTML = errorsResp[prop];
+                    errorsContainer.append(errorItem);
+                }
+                errorsContainer.classList.remove("d-none");
+                errorsContainer.addEventListener("click", function () {
+                    errorsContainer.classList.add("d-none");
+                })
+            })
+    }
+
+    function resetValue(tag) {
+        tag.value = "";
     }
     
 </script>

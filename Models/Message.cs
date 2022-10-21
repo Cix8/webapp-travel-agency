@@ -20,8 +20,8 @@ namespace webapp_travel_agency.Models
         [Required(ErrorMessage = "Il messaggio è obbligatorio")]
         [Column(TypeName = "text")]
         public string Content { get; set; }
-        public int TravelPackageId { get; set; }
-        public TravelPackage TravelPackage { get; set; }
+        public int? TravelPackageId { get; set; }
+        public TravelPackage? TravelPackage { get; set; }
 
         public Message()
         {
