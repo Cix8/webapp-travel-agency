@@ -3,6 +3,7 @@
     public interface IPackageRepo
     {
         public List<TravelPackage> GetList(string includes = "");
+        public List<TravelPackage> GetFilteredList(string? key);
         public TravelPackage GetPackageBy(int id, string includes="");
         public void AddPackage(TravelPackage package);
         public void RemovePackage(TravelPackage package);

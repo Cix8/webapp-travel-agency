@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Db_Context;
 using webapp_travel_agency.Models;
+using webapp_travel_agency.Models.Repository.Interfaces;
 
 namespace webapp_travel_agency.Controllers.ApiController
 {
@@ -9,28 +10,24 @@ namespace webapp_travel_agency.Controllers.ApiController
     [ApiController]
     public class TravelPackageController : ControllerBase
     {
-        private TravelAgencyContext _ctx;
-        public TravelPackageController()
+        private IPackageRepo _packageRepo;
+
+        public TravelPackageController(IPackageRepo _packRepo)
         {
-            _ctx = new TravelAgencyContext();
+            _packageRepo = _packRepo;
         }
 
         [HttpGet]
         public IActionResult Get(string? searchKey)
         {
-            IQueryable<TravelPackage> packages = _ctx.TravelPackages;
-            if(searchKey != null)
-            {
-                packages = packages.Where(pack => pack.Title.Contains(searchKey));
-            }
-            packages = packages.Include("Destinations");
-            return Ok(packages.ToList());
+            List<TravelPackage> packages = _packageRepo.GetFilteredList(searchKey);
+            return Ok(packages);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetDetails(int id)
         {
-            TravelPackage package = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
+            TravelPackage package = _packageRepo.GetPackageBy(id, "Destinations");
             if(package == null)
             {
                 return NotFound();

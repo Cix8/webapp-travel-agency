@@ -26,6 +26,17 @@ namespace webapp_travel_agency.Models.Repository
             return packages.ToList();
         }
 
+        public List<TravelPackage> GetFilteredList(string? key)
+        {
+            IQueryable<TravelPackage> packages = _ctx.TravelPackages;
+            if (key != null)
+            {
+                packages = packages.Where(pack => pack.Title.Contains(key));
+            }
+            packages = packages.Include("Destinations");
+            return packages.ToList();
+        }
+
         public TravelPackage GetPackageBy(int id, string includes="")
         {
             IQueryable<TravelPackage> package = _ctx.TravelPackages.Where(pack => pack.Id == id);

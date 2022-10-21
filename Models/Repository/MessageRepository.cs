@@ -24,5 +24,16 @@ namespace webapp_travel_agency.Models.Repository
             }
             return messages.ToList();
         }
+
+        public void AddMessage(Message message)
+        {
+            _ctx.Messages.Add(message);
+            this.Save();
+        }
+
+        public void Save()
+        {
+            _ctx.SaveChanges();
+        }
     }
 }
