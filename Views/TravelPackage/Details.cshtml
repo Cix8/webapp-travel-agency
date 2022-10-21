@@ -12,6 +12,8 @@
         <h2 class="card-title">@Model.Title</h2>
         <p class="card-text">Descrizione: @Model.Description</p>
         <span class="d-block pb-3">Prezzo: € @Model.Price</span>
+        <span class="d-block pb-3">Nr Messaggi collegati: @Model.Messages.Count</span>
+        <span class="d-block pb-3">Destinazioni: @Model.DestinationsToString()</span>
         <a href="@Url.Action("Update", "TravelPackage", new {id = Model.Id})" class="btn btn-primary">Modifica pacchetto</a>
         <form class="d-inline" asp-action="Delete" asp-controller="TravelPackage" asp-route-id="@Model.Id" method="post">
             @Html.AntiForgeryToken()

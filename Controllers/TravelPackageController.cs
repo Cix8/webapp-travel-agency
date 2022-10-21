@@ -46,7 +46,7 @@ namespace webapp_travel_agency.Controllers
                 return View(formData);
             }
 
-            formData.Package.Destinations = _destinationRepo.GetSelectedDestinations(formData);
+            formData.Package.Destinations = _destinationRepo.GetSelectedDestinations(formData.SelectedDestinations);
             _packageRepo.AddPackage(formData.Package);
             return RedirectToAction("Index");
         }
@@ -54,7 +54,7 @@ namespace webapp_travel_agency.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            TravelPackage thisPackage = _packageRepo.GetPackageBy(id, "Messages");
+            TravelPackage thisPackage = _packageRepo.GetPackageBy(id, "Messages, Destinations");
             if (thisPackage == null)
             {
                 return NotFound("Pacchetto non trovato");
@@ -98,7 +98,7 @@ namespace webapp_travel_agency.Controllers
             packageToUpdate.Cover = formData.Package.Cover;
             packageToUpdate.Price = formData.Package.Price;
             packageToUpdate.DurationInDays = formData.Package.DurationInDays;
-            packageToUpdate.Destinations = _destinationRepo.GetSelectedDestinations(formData);
+            packageToUpdate.Destinations = _destinationRepo.GetSelectedDestinations(formData.SelectedDestinations);
 
             _packageRepo.Save();
 

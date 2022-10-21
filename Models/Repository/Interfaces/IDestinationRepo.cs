@@ -3,7 +3,7 @@
     public interface IDestinationRepo
     {
         public List<Destination> GetList();
-        public List<Destination> GetSelectedDestinations(TravelDestination data);
+        public List<Destination> GetSelectedDestinations(List<int> selectedDest);
 
     }
 }

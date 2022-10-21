@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webapp_travel_agency.CustomValidations;
@@ -33,6 +34,21 @@ namespace webapp_travel_agency.Models
         {
             Destinations = new List<Destination>();
             Messages = new List<Message>();
+        }
+
+        public string DestinationsToString()
+        {
+            string result = "";
+            if(Destinations.Count > 0)
+            {
+                for (int i = 0; i < Destinations.Count - 1; i++)
+                {
+                    Destination dest = Destinations[i];
+                    result += $"{dest.Name}, ";
+                }
+                result += Destinations[Destinations.Count - 1].Name;
+            }
+            return result;
         }
     }
 }

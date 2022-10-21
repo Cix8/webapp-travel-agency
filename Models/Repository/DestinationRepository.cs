@@ -17,9 +17,9 @@ namespace webapp_travel_agency.Models.Repository
             return destinations;
         }
 
-        public List<Destination> GetSelectedDestinations(TravelDestination data)
+        public List<Destination> GetSelectedDestinations(List<int> selectedDest)
         {
-            List<Destination> destinations = _ctx.Destinations.Where(dest => data.SelectedDestinations.Contains(dest.Id)).ToList();
+            List<Destination> destinations = _ctx.Destinations.Where(dest => selectedDest.Contains(dest.Id)).ToList();
             return destinations;
         }
     }
