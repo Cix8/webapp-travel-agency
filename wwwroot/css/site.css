@@ -33,3 +33,11 @@ body {
 .ms_card img {
     height: 15rem;
 }
+
+.ms_pointer {
+    cursor: pointer !important;
+}
+
+#errors {
+    list-style: none !important;
+}
