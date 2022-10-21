@@ -17,6 +17,11 @@ body {
   margin-bottom: 60px;
 }
 
+#ms_logo {
+    width: 30px;
+    height: 30px;
+}
+
 .ms_align-normal {
     align-items: normal !important;
 }
