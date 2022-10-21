@@ -4,7 +4,7 @@
 
 @model TravelPackage
 
-<h1>Dettagli pacchetto @Model.Title</h1>
+<h1 class="text-center">Dettagli pacchetto @Model.Title</h1>
 
 <div class="card my-3 mx-auto" style="width: 25rem;">
     <img src="@Model.Cover" class="card-img-top" style="height:15rem;">
@@ -19,3 +19,26 @@
         </form>
     </div>
 </div>
+
+<h2 class="text-center pt-4 pb-3">Lista messaggi collegati</h2>
+
+@if (Model.Messages.Count > 0)
+{
+    <ul class="list-group flex-row flex-wrap justify-content-center">
+        @foreach (Message mex in Model.Messages)
+        {
+            <li class="card my-3 me-3" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@mex.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Da: @mex.Name</h6>
+                    <h6 class="card-subtitle mb-2">Email: <a class="link-primary ms_pointer">@mex.Email</a></h6>
+                    <p class="card-text">@mex.Content</p>
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <h3>Nessun messaggio collegato a questo pacchetto</h3>
+}

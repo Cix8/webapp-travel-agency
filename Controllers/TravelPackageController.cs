@@ -51,7 +51,7 @@ namespace webapp_travel_agency.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            TravelPackage thisPackage = _ctx.TravelPackages.Where(pack => pack.Id == id).FirstOrDefault();
+            TravelPackage thisPackage = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Messages").FirstOrDefault();
             if(thisPackage == null)
             {
                 return NotFound("Pacchetto non trovato");
