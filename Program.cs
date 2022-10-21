@@ -2,7 +2,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using webapp_travel_agency.Db_Context;
+using webapp_travel_agency.Models.Repository;
+using webapp_travel_agency.Models.Repository.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IPackageRepo, PackageRepository>();
+builder.Services.AddScoped<IDestinationRepo, DestinationRepository>();
+builder.Services.AddScoped<IMessageRepo, MessageRepository>();
+
+builder.Services.AddScoped<TravelAgencyContext>();
+
 var connectionString = builder.Configuration.GetConnectionString("TravelAgencyContextConnection") ?? throw new InvalidOperationException("Connection string 'TravelAgencyContextConnection' not found.");
 
 builder.Services.AddDbContext<TravelAgencyContext>(options =>

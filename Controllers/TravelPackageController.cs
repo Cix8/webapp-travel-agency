@@ -3,24 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Db_Context;
 using webapp_travel_agency.Models;
+using webapp_travel_agency.Models.Repository;
+using webapp_travel_agency.Models.Repository.Interfaces;
 
 namespace webapp_travel_agency.Controllers
 {
     [Authorize]
     public class TravelPackageController : Controller
     {
-        private TravelAgencyContext _ctx;
+        private IPackageRepo _packageRepo;
+        private IDestinationRepo _destinationRepo;
 
-        public TravelPackageController()
+        public TravelPackageController(IPackageRepo _packRepo, IDestinationRepo _destRepo)
         {
-            _ctx = new TravelAgencyContext();
+            _packageRepo = _packRepo;
+            _destinationRepo = _destRepo;
         }
 
 
         [HttpGet]
         public IActionResult Index()
         {
-            List<TravelPackage> packages = _ctx.TravelPackages.ToList();
+            List<TravelPackage> packages = _packageRepo.GetList("Destinations, Messages");
             return View(packages);
         }
 
@@ -28,7 +32,7 @@ namespace webapp_travel_agency.Controllers
         public IActionResult Create()
         {
             TravelDestination model = new TravelDestination();
-            model.Destinations = _ctx.Destinations.ToList();
+            model.Destinations = _destinationRepo.GetList();
             return View(model);
         }
 
@@ -36,23 +40,22 @@ namespace webapp_travel_agency.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TravelDestination formData)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                formData.Destinations = _ctx.Destinations.ToList();
+                formData.Destinations = _destinationRepo.GetList();
                 return View(formData);
             }
 
-            formData.Package.Destinations = _ctx.Destinations.Where(dest => formData.SelectedDestinations.Contains(dest.Id)).ToList();
-            _ctx.TravelPackages.Add(formData.Package);
-            _ctx.SaveChanges();
+            formData.Package.Destinations = _destinationRepo.GetSelectedDestinations(formData);
+            _packageRepo.AddPackage(formData.Package);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Details(int id)
         {
-            TravelPackage thisPackage = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Messages").FirstOrDefault();
-            if(thisPackage == null)
+            TravelPackage thisPackage = _packageRepo.GetPackageBy(id, "Messages");
+            if (thisPackage == null)
             {
                 return NotFound("Pacchetto non trovato");
             }
@@ -63,12 +66,12 @@ namespace webapp_travel_agency.Controllers
         public IActionResult Update(int id)
         {
             TravelDestination model = new TravelDestination();
-            model.Package = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
-            if(model.Package == null)
+            model.Package = _packageRepo.GetPackageBy(id, "Destinations"); 
+            if (model.Package == null)
             {
                 return NotFound("Pacchetto non trovato");
             }
-            model.Destinations = _ctx.Destinations.ToList();
+            model.Destinations = _destinationRepo.GetList();
             return View(model);
         }
 
@@ -80,12 +83,12 @@ namespace webapp_travel_agency.Controllers
 
             if (!ModelState.IsValid)
             {
-                formData.Destinations = _ctx.Destinations.ToList();
+                formData.Destinations = _destinationRepo.GetList();
                 return View(formData);
             }
 
-            TravelPackage packageToUpdate = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
-            if(packageToUpdate == null)
+            TravelPackage packageToUpdate = _packageRepo.GetPackageBy(id, "Destinations");
+            if (packageToUpdate == null)
             {
                 return NotFound("Pacchetto non trovato");
             }
@@ -95,26 +98,25 @@ namespace webapp_travel_agency.Controllers
             packageToUpdate.Cover = formData.Package.Cover;
             packageToUpdate.Price = formData.Package.Price;
             packageToUpdate.DurationInDays = formData.Package.DurationInDays;
-            packageToUpdate.Destinations = _ctx.Destinations.Where(dest => formData.SelectedDestinations.Contains(dest.Id)).ToList();
+            packageToUpdate.Destinations = _destinationRepo.GetSelectedDestinations(formData);
 
-            _ctx.SaveChanges();
+            _packageRepo.Save();
 
-            return RedirectToAction("Details", new {id = id});
+            return RedirectToAction("Details", new { id = id });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            TravelPackage packToDelete = _ctx.TravelPackages.Where(pack => pack.Id == id).FirstOrDefault();
+            TravelPackage packToDelete = _packageRepo.GetPackageBy(id);
 
             if (packToDelete == null)
             {
                 return NotFound("Non siamo riusciti a trovare il pacchetto che vuoi eliminare");
             }
 
-            _ctx.Remove(packToDelete);
-            _ctx.SaveChanges();
+            _packageRepo.RemovePackage(packToDelete);
 
             return RedirectToAction("Index");
         }

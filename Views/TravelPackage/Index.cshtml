@@ -14,6 +14,8 @@
                 <div class="card-body">
                     <h2 class="card-title">@package.Title</h2>
                     <span class="d-block pb-3">Prezzo: € @package.Price</span>
+                    <span class="d-block pb-3">Nr Destinazioni: @package.Destinations.Count</span>
+                    <span class="d-block pb-3">Nr Messaggi collegati: @package.Messages.Count</span>
                     <a href="@Url.Action("Details", "TravelPackage", new {id = package.Id})" class="btn btn-primary">Visualizza pacchetto</a>
                 </div>
             </li>
