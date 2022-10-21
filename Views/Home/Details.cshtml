@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Dettaglio pacchetto";
+}
+
+<h1 id="title" class="text-center py-4">Pacchetto </h1>
+
+<div class="container-fluid d-flex justify-content-center" id="content-container"></div>
+
+<script type="text/javascript">
+    
+    const currentUrl = window.location.href;
+    const urlArray = currentUrl.split("/");
+    const currentId = urlArray[urlArray.length - 1];
+    const contentContainer = document.getElementById("content-container");
+
+    console.log(currentId);
+
+    getDetails(currentId);
+
+    function getDetails(id) {
+        axios.get("/api/travelpackage/getdetails/" + id)
+            .then(resp => {
+                console.log(resp.data);
+
+                const pack = resp.data;
+                
+                const itemCard = document.createElement("div");
+                itemCard.setAttribute("class", "card my-3 me-3 ms_card");
+                const cardImg = document.createElement("img");
+                cardImg.setAttribute("src", pack.cover);
+                cardImg.setAttribute("class", "card-img-top");
+                const cardBody = document.createElement("div");
+                cardBody.setAttribute("class", "card-body");
+                const cardTitle = document.createElement("h2");
+                cardTitle.setAttribute("class", "card-title");
+                const cardDesc = document.createElement("p");
+                cardDesc.setAttribute("class", "card-text pt-3");
+                const cardPrice = document.createElement("span");
+                cardPrice.setAttribute("class", "d-block pb-3");
+                const cardDuration = document.createElement("span");
+                const cardDestinations = document.createElement("span");
+                cardDestinations.setAttribute("class", "d-block pb-3");
+                cardTitle.innerHTML += `Pacchetto ${pack.title}`;
+                cardDesc.innerHTML += `${pack.description}`;
+                cardPrice.innerHTML += `Prezzo: € ${pack.price}/persona`;
+                cardDuration.innerHTML += `${pack.durationInDays} giorni`;
+                pack.destinations.forEach((dest, index) => {
+                    cardDestinations.innerHTML += `${dest.name}`;
+                    index != pack.destinations.length - 1 ? cardDestinations.innerHTML += ", " : "";
+                })
+                cardBody.append(cardTitle);
+                cardBody.append(cardDesc);
+                cardBody.append(cardPrice);
+                cardBody.append(cardDestinations);
+                cardBody.append(cardDuration);
+                itemCard.append(cardImg);
+                itemCard.append(cardBody);
+
+                contentContainer.append(itemCard);
+            })
+            .catch(e => {
+                console.log(e);
+            })
+    }
+    
+</script>

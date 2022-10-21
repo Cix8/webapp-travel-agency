@@ -26,5 +26,16 @@ namespace webapp_travel_agency.Controllers.ApiController
             packages = packages.Include("Destinations");
             return Ok(packages.ToList());
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetDetails(int id)
+        {
+            TravelPackage package = _ctx.TravelPackages.Where(pack => pack.Id == id).Include("Destinations").FirstOrDefault();
+            if(package == null)
+            {
+                return NotFound();
+            }
+            return Ok(package);
+        }
     }
 }

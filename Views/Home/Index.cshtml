@@ -47,6 +47,10 @@
                 data.forEach(pack => {
                     const listItem = document.createElement("li");
                     listItem.setAttribute("class", "card my-3 me-3 ms_card");
+                    const anchorTag = document.createElement("a");
+                    anchorTag.setAttribute("class", "text-decoration-none");
+                    anchorTag.setAttribute("href", `/Home/Details/${pack.id}`);
+                    anchorTag.style.color = "inherit";
                     const cardImg = document.createElement("img");
                     cardImg.setAttribute("src", pack.cover);
                     cardImg.setAttribute("class", "card-img-top");
@@ -57,15 +61,20 @@
                     const cardDesc = document.createElement("p");
                     cardDesc.setAttribute("class", "card-text pt-3");
                     const cardPrice = document.createElement("span");
-                    cardPrice.setAttribute("class", "d-block");
+                    cardPrice.setAttribute("class", "d-block pb-3");
+                    const cardInfo = document.createElement("span");
+                    cardInfo.innerHTML += `${pack.durationInDays} giorni | ${pack.destinations.length} `;
+                    pack.destinations.length > 1 ? cardInfo.innerHTML += "destinazioni" : cardInfo.innerHTML += "destinazione";
                     cardTitle.innerHTML += `Pacchetto ${pack.title}`;
                     cardDesc.innerHTML += `${pack.description}`;
                     cardPrice.innerHTML += `Prezzo: € ${pack.price}`;
                     cardBody.append(cardTitle);
                     cardBody.append(cardDesc);
                     cardBody.append(cardPrice);
-                    listItem.append(cardImg);
-                    listItem.append(cardBody);
+                    cardBody.append(cardInfo);
+                    anchorTag.append(cardImg);
+                    anchorTag.append(cardBody);
+                    listItem.append(anchorTag);
                     list.append(listItem);
                 })
                 contentContainer.append(list);
