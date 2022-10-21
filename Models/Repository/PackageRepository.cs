@@ -31,7 +31,7 @@ namespace webapp_travel_agency.Models.Repository
             IQueryable<TravelPackage> packages = _ctx.TravelPackages;
             if (key != null)
             {
-                packages = packages.Where(pack => pack.Title.Contains(key));
+                packages = packages.Where(pack => pack.Title.Contains(key) || pack.Description.Contains(key));
             }
             packages = packages.Include("Destinations");
             return packages.ToList();
