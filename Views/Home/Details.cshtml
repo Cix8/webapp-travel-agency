@@ -12,6 +12,7 @@
     const urlArray = currentUrl.split("/");
     const currentId = urlArray[urlArray.length - 1];
     const contentContainer = document.getElementById("content-container");
+    const title = document.getElementById("title");
 
     console.log(currentId);
 
@@ -23,6 +24,8 @@
                 console.log(resp.data);
 
                 const pack = resp.data;
+
+                title.innerHTML += `${pack.title}`;
                 
                 const itemCard = document.createElement("div");
                 itemCard.setAttribute("class", "card my-3 me-3 ms_card");
