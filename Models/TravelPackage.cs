@@ -28,9 +28,11 @@ namespace webapp_travel_agency.Models
         [DurationValidation]
         public int DurationInDays { get; set; }
         public List<Destination> Destinations { get; set; }
+        public List<Message> Messages { get; set; }
         public TravelPackage()
         {
             Destinations = new List<Destination>();
+            Messages = new List<Message>();
         }
     }
 }
